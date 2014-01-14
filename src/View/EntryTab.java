@@ -1,3 +1,4 @@
+package View;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -8,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 
+import Data.Entry;
 import net.atlanticbb.tantlinger.shef.HTMLEditorPane;
 
 public class EntryTab extends JPanel{
@@ -47,17 +49,18 @@ public class EntryTab extends JPanel{
 		}
 		
 		public String getSourceBase64(){
+			//TODO get Base64 lib
 			return "STUB";
 		}
 
 		public String getTitle() {
 			// TODO Auto-generated method stub
-			return "TABNAME";
+			return "TABNAME";//this.getName();
 		}
 
 		public boolean save() {
 			// TODO Auto-generated method stub
-			return false;
+			return saved;
 		}
 
 		public boolean isChanged() {
@@ -74,11 +77,9 @@ public class EntryTab extends JPanel{
 			
 		}
 
-		public void load(File f) {
-			// TODO Auto-generated method stub
-			
+		public void load(Entry e) {
+			html.setText(e.getHTML());
+			setName(e.getTitle());
+			//setEditStyle(e.getEditCount());
 		}
-
-
-	
 }

@@ -1,3 +1,4 @@
+package View;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+
+import Data.Entry;
 
 
 public class NotebookFrame extends JFrame implements ActionListener {
@@ -182,27 +185,27 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		}
 	}
 	
-	private void load(File f) {
-		int index = -1;
-		if (f != null) {
-			for (int i = 0; i < entries.getTabCount(); i++) {
-				if (f.getAbsolutePath().equalsIgnoreCase(
-						entries.getToolTipTextAt(i))) {
-					// If the file is already loaded, switch to it.
-					index = i;
-				}
-			}
-		}
-		if (index == -1) { // if f is null or not present
-			EntryTab temp = addPage();
-			if (f != null) {
-				temp.load(f);
-			}
-
-		} else {
-			entries.setSelectedIndex(index);
-		}
-		//refreshWorkAreas();
+	private void load(Entry f) {
+//		int index = -1;
+//		if (f != null) {
+//			for (int i = 0; i < entries.getTabCount(); i++) {
+//				if (f.getAbsolutePath().equalsIgnoreCase(
+//						entries.getToolTipTextAt(i))) {
+//					// If the file is already loaded, switch to it.
+//					index = i;
+//				}
+//			}
+//		}
+//		if (index == -1) { // if f is null or not present
+//			EntryTab temp = addPage();
+//			if (f != null) {
+//				temp.load(f);
+//			}
+//
+//		} else {
+//			entries.setSelectedIndex(index);
+//		}
+//		//refreshWorkAreas();
 	}
 
 

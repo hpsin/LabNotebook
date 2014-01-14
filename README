@@ -1,0 +1,8 @@
+A no-frills Lab Notebook for EECS 399, Senior Project.
+Features include:
+Importing of images
+Encryption  (eventually)
+PDF Support (eventually)
+
+Library Dependencies:
+SHEF WYSIWYG Editor ( http://shef.sourceforge.net/ )
