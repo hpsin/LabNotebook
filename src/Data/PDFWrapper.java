@@ -4,8 +4,14 @@ import org.w3c.dom.Node;
 
 public class PDFWrapper {
 
+	Node root;
+
 	public PDFWrapper(Node item) {
-		// TODO Auto-generated constructor stub
+		root=item;
+	}
+
+	public void saveXML() {
+		
 	}
 	
 }

@@ -1,9 +1,5 @@
 package View;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.io.File;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -17,14 +13,19 @@ public class EntryTab extends JPanel{
 	private JScrollPane wys;
 	private HTMLEditorPane html;
 	private boolean saved = false; 
+	Entry en;
 	
-		public EntryTab(){
-			
+		public EntryTab(Entry en){
+			this.en = en;
 			html = new HTMLEditorPane();
 			JToolBar entryToolBar = (JToolBar)html.getComponent(0);
 			wys = (JScrollPane)((JTabbedPane)html.getComponent(1)).getComponent(0);
 			generateLayout(entryToolBar);
 	        
+			if(en.getHTML()!=null)html.setText(en.getHTML());
+			this.setName(en.getTitle());
+//			setEditor(en.getEditCount()); 
+			
 		}
 		
 		private void generateLayout(JToolBar entryToolBar){
@@ -54,32 +55,28 @@ public class EntryTab extends JPanel{
 		}
 
 		public String getTitle() {
-			// TODO Auto-generated method stub
-			return "TABNAME";//this.getName();
+			return this.getName();
 		}
 
 		public boolean save() {
-			// TODO Auto-generated method stub
+			//if(!saved){
+				en.setHTML(html.getText());
+				System.out.println(html.getText());
+				saved = en.saveXML();
+//				setEditor(en.getEditCount());
+		//	}
 			return saved;
 		}
 
 		public boolean isChanged() {
 			return saved;
 		}
-
-		public void saveAs() {
-			// TODO Auto-generated method stub
-			
-		}
-
+		
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void load(Entry e) {
-			html.setText(e.getHTML());
-			setName(e.getTitle());
-			//setEditStyle(e.getEditCount());
+			if(e.getActionCommand().equals("save entry")){
+				save();
+			}else{
+				System.out.println(e.getActionCommand());
+			}
 		}
 }
