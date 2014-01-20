@@ -2,7 +2,9 @@ A no-frills Lab Notebook for EECS 399, Senior Project.
 Features include:
 Importing of images
 Encryption  (eventually)
-PDF Support (eventually)
+PDF Support 
 
 Library Dependencies:
-SHEF WYSIWYG Editor ( http://shef.sourceforge.net/ )
+SHEF WYSIWYG Editor  ( http://shef.sourceforge.net/ )
+Apache Commons Codec 1.9 (http://commons.apache.org/proper/commons-codec/)
+ICEpdf 5.04 (http://www.icesoft.org/java/projects/ICEpdf/overview.jsf)

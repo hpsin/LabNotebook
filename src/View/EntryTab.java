@@ -1,5 +1,7 @@
 package View;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -13,7 +15,8 @@ public class EntryTab extends JPanel{
 	private JScrollPane wys;
 	private HTMLEditorPane html;
 	private boolean saved = false; 
-	Entry en;
+	private Entry en;
+	private static Color[] editRotation = {Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GREEN, Color.RED};
 	
 		public EntryTab(Entry en){
 			this.en = en;
@@ -24,10 +27,17 @@ public class EntryTab extends JPanel{
 	        
 			if(en.getHTML()!=null)html.setText(en.getHTML());
 			this.setName(en.getTitle());
-//			setEditor(en.getEditCount()); 
+			setEditor(en.getEditCount()); 
 			
 		}
 		
+		private void setEditor(int editCount) {
+			Color toBe;
+			if(editCount == 0){
+				
+			}
+		}
+
 		private void generateLayout(JToolBar entryToolBar){
 			javax.swing.GroupLayout entryLayout = new javax.swing.GroupLayout(this);
 	        this.setLayout(entryLayout);

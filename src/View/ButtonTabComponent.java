@@ -70,13 +70,13 @@ public class ButtonTabComponent extends JPanel {
 
 	/**
 	 * Constructor for the Button Tab. The Pane and OuterFrame are stored for
-	 *  use by the Button, while the Desk is just used to fetch tooltips and
+	 *  use by the Button, while the EntryTab is just used to fetch tooltips and
 	 *  titles.  
 	 * @param pane JTabbedPane holding the Desk.
-	 * @param desk Desk Component that this Tab corresponds with.
+	 * @param enTab Component that this Tab corresponds with.
 	 * @param of OuterFrame for the entire program.
 	 */
-	public ButtonTabComponent(final JTabbedPane pane, final EntryTab desk,
+	public ButtonTabComponent(final JTabbedPane pane, final JPanel enTab,
 			final NotebookFrame of) {
 		// unset default FlowLayout' gaps
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -84,7 +84,7 @@ public class ButtonTabComponent extends JPanel {
 			throw new NullPointerException("TabbedPane is null");
 		}
 		this.pane = pane;
-		if (desk == null) {
+		if (enTab == null) {
 			throw new NullPointerException("Desk is null");
 		}
 
@@ -99,7 +99,7 @@ public class ButtonTabComponent extends JPanel {
 			public String getText() {
 				int i = pane.indexOfTabComponent(ButtonTabComponent.this);
 				if (i != -1) {
-					return desk.getTitle();
+					return enTab.getName();
 				}
 				return null;
 			}

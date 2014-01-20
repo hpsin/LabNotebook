@@ -142,5 +142,22 @@ public class Notebook {
 	public ArrayList<Entry> getEntries() {
 		return entryList;
 	}
+
+
+	public void addPDF(File file) {
+		Element el = dom.createElement("PDF");
+		dom.getFirstChild().appendChild(el);
+		try {
+			pdfList.add(new PDFWrapper(el,dom, this, file));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public ArrayList<PDFWrapper> getPDFs() {
+		return pdfList;
+	}
 	
 }

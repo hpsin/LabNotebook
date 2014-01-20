@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class Entry {
+public class Entry extends DataStorage{
 	private String html_body;
 	private String title;
 	private Date timestamp;
@@ -77,9 +77,6 @@ public class Entry {
 	}
 
 	public String getTitle() {
-		return title;
-	}
-	public String toString(){
 		return title;
 	}
 
