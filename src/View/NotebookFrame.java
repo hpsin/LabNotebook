@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.security.InvalidKeyException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -42,8 +43,11 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		generateToolbar();
 		generateLayout();
 		setListeners();
-		loadNotebook();
-		fillEntryList();		
+		try {
+			loadNotebook();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		}
 		//Maximize on open and display.
 		//setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
@@ -51,7 +55,7 @@ public class NotebookFrame extends JFrame implements ActionListener {
 
 	}
 
-	private void loadNotebook(){
+	private void loadNotebook() throws InvalidKeyException{
 		//Custom button text
 		Object[] options = {"Load", "Create"};
 		int n = JOptionPane.showOptionDialog(this,
@@ -260,7 +264,11 @@ public class NotebookFrame extends JFrame implements ActionListener {
 			newEntry();
 
 		} else if ("load notebook".equals(cmd)) {
-			loadNotebook();
+			try {
+				loadNotebook();
+			} catch (InvalidKeyException e1) {
+				e1.printStackTrace();
+			}
 
 		} else if ("save all".equals(cmd)) {
 			for (Component d : entries.getComponents()) {

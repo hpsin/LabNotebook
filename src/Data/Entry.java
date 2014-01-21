@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
+import javax.crypto.spec.SecretKeySpec;
+
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,31 +25,41 @@ public class Entry extends DataStorage{
 	private ArrayList<Date> editList = new ArrayList<>();
 	private Notebook parent;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	
-	public Entry(Node item, Document doc, String title, Notebook note){
+	private SecretKeySpec key;
+
+	public Entry(Node item, Document doc, String title, Notebook note, SecretKeySpec key){
 		this.doc = doc;
 		parent = note;
 		Date d = new Date();
 		timestamp = d;
 		this.title=title;
 		this.nodeRep=(Element) item;
-		
+		this.key = key;
+
 		item.appendChild(doc.createElement("Title"));
 		item.appendChild(doc.createElement("Timestamp"));
 		item.appendChild(doc.createElement("Edits"));
-		item.appendChild(makeTextNode("Body", "", doc));
-		
-		getNode("Title", (Element) item).appendChild(doc.createTextNode(title));
+		Node html = doc.createElement("Body");
+		Node html_cdata = doc.createCDATASection("");
+		item.appendChild(html);
+		html.appendChild(html_cdata);
+
+		getNode("Title", (Element) item).appendChild(doc.createTextNode(Util.encrypt(title, key)));
 		getNode("Timestamp", nodeRep).appendChild(doc.createTextNode(sdf.format(d)));
 		editCount=0;
 	}
-	
+
 	public Entry(Node item, Document doc, Notebook note) {
+		this(item,doc,note, null);
+	}
+
+	public Entry(Node item, Document doc, Notebook note, SecretKeySpec key) {
 		this.doc=doc;
 		this.parent = note;
+		this.key=key;
 		nodeRep = (Element) item;
-		title = getTextValue(title, nodeRep, "Title");
-		html_body = getTextValue(html_body, nodeRep, "Body");
+		title = Util.decrypt(getTextValue(title, nodeRep, "Title"), key);
+		html_body = Util.decrypt(getTextValue(html_body, nodeRep, "Body"), key);
 		//html_body = html_body.substring(9, html_body.length()-4); //Get rid of CDATA
 		try {
 			timestamp = sdf.parse(getTextValue(null, nodeRep, "Timestamp"));
@@ -55,14 +68,14 @@ public class Entry extends DataStorage{
 		}
 		NodeList edits = nodeRep.getElementsByTagName("Edits").item(0).getChildNodes();
 		editCount = edits.getLength();
-		
+
 		for(int i=0; i<edits.getLength(); i++){
 			Node n = edits.item(i);
 			try {
 				String text = n.getTextContent();
 				Date editDate = sdf.parse(text);
 				editList.add(editDate);
-//				editList.add(sdf.parse(n.getTextContent()));
+				//				editList.add(sdf.parse(n.getTextContent()));
 			} catch (DOMException | ParseException e1) {
 				e1.printStackTrace();
 			}
@@ -83,32 +96,34 @@ public class Entry extends DataStorage{
 	public int getEditCount(){
 		return editCount;
 	}
-	
-	private String getTextValue(String def, Element doc, String tag) {
-	    String value = def;
-	    value = getNode(tag, doc).getTextContent();
-	    return value;
-	}
 
+	private String getTextValue(String def, Element doc, String tag) {
+		String value = def;
+		value = getNode(tag, doc).getTextContent();
+		return value;
+	}
+	
 	private Element getNode(String tag, Element doc){
 		NodeList nl = doc.getElementsByTagName(tag);
-	    if (nl.getLength() > 0 ) {
-	        return (Element) nl.item(0);
-	    }
-	    throw new NoSuchElementException();
+		if (nl.getLength() > 0 ) {
+			return (Element) nl.item(0);
+		}
+		throw new NoSuchElementException();
 	}
-	
+
 	public boolean saveXML(){
-		getNode("Body",nodeRep).getFirstChild().setNodeValue( html_body);
+		((CharacterData)getNode("Body",nodeRep).getFirstChild()).setData(Util.encrypt(html_body, key));
 		Date d = new Date();
 		getNode("Edits", nodeRep).appendChild(makeTextNode("Edit", sdf.format(d), doc)); 
 		editCount++;
 		return parent.save();
 	}
-		
+
 	private Element makeTextNode(String name, String value, Document doc){
 		Element e = doc.createElement(name);
 		e.appendChild(doc.createTextNode(value));
 		return e;
 	}
+
+
 }

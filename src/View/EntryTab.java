@@ -59,11 +59,6 @@ public class EntryTab extends JPanel{
 			return html.getText();
 		}
 		
-		public String getSourceBase64(){
-			//TODO get Base64 lib
-			return "STUB";
-		}
-
 		public String getTitle() {
 			return this.getName();
 		}
@@ -71,7 +66,6 @@ public class EntryTab extends JPanel{
 		public boolean save() {
 			//if(!saved){
 				en.setHTML(html.getText());
-				System.out.println(html.getText());
 				saved = en.saveXML();
 //				setEditor(en.getEditCount());
 		//	}
