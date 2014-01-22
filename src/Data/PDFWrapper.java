@@ -28,18 +28,21 @@ public class PDFWrapper extends DataStorage{
 	private File filename;
 	private SecretKeySpec key;
 	
-	public PDFWrapper(Node item, Document doc, Notebook parent, File file, SecretKeySpec key) throws IOException {
+	public PDFWrapper(Node item, Document doc, Notebook parent, File file, SecretKeySpec key, int maxSerial) throws IOException {
 		this.root=item;
 		this.key = key;
 		this.filename = file;
+		this.serial = maxSerial;
+		
 		InputStream is = new FileInputStream(file);
 		byte[] buf = new byte[(int) file.length()];
 		is.read(buf);
-		String data = Util.encrypt(Base64.encodeBase64String(buf), key);		
+		String data = Util.encryptBytes(buf, key);		
 		Element body = doc.createElement("Body");
 		body.appendChild(doc.createTextNode(data));
 		Element titleEl = doc.createElement("Title");
 		titleEl.appendChild(doc.createTextNode(Util.encrypt(filename.getName(), key)));
+		((Element) root).setAttribute("Serial", String.valueOf(serial));
 		root.appendChild(titleEl);
 		root.appendChild(body);
 		parent.save();
@@ -51,6 +54,7 @@ public class PDFWrapper extends DataStorage{
 		root=item;
 		this.key = key;
 		this.filename = new File(Util.decrypt(getTextValue(null, (Element)item, "Title"), key));
+		this.serial = Integer.parseInt(item.getAttributes().getNamedItem("Serial").getTextContent());
 	}
 	
 	public String getTitle(){

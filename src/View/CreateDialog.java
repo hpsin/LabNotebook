@@ -76,7 +76,8 @@ public class CreateDialog extends JDialog {
 		passField = new javax.swing.JTextField();
 		passLabel = new javax.swing.JLabel("Password:");
 		createButton = new javax.swing.JButton("Create");
-		cancelButton = new javax.swing.JButton("Cance");
+		cancelButton = new javax.swing.JButton("Cancel");
+		this.getRootPane().setDefaultButton(createButton);
 
 		createButton.addActionListener(new ActionListener() {
 

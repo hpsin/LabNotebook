@@ -27,7 +27,7 @@ public class Entry extends DataStorage{
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private SecretKeySpec key;
 
-	public Entry(Node item, Document doc, String title, Notebook note, SecretKeySpec key){
+	public Entry(Node item, Document doc, String title, Notebook note, SecretKeySpec key, int maxSerial){
 		this.doc = doc;
 		parent = note;
 		Date d = new Date();
@@ -35,10 +35,13 @@ public class Entry extends DataStorage{
 		this.title=title;
 		this.nodeRep=(Element) item;
 		this.key = key;
-
+		this.serial = maxSerial;
+		
 		item.appendChild(doc.createElement("Title"));
 		item.appendChild(doc.createElement("Timestamp"));
 		item.appendChild(doc.createElement("Edits"));
+		nodeRep.setAttribute("Serial", String.valueOf(maxSerial));
+		
 		Node html = doc.createElement("Body");
 		Node html_cdata = doc.createCDATASection("");
 		item.appendChild(html);
@@ -57,6 +60,7 @@ public class Entry extends DataStorage{
 		this.doc=doc;
 		this.parent = note;
 		this.key=key;
+		this.serial = Integer.parseInt(item.getAttributes().getNamedItem("Serial").getTextContent());
 		nodeRep = (Element) item;
 		title = Util.decrypt(getTextValue(title, nodeRep, "Title"), key);
 		html_body = Util.decrypt(getTextValue(html_body, nodeRep, "Body"), key);
@@ -124,6 +128,5 @@ public class Entry extends DataStorage{
 		e.appendChild(doc.createTextNode(value));
 		return e;
 	}
-
 
 }

@@ -139,11 +139,14 @@ public class NotebookFrame extends JFrame implements ActionListener {
 
 	void removeTabAt(int i) {
 		if (i >= 0) {
-			EntryTab temp = ((EntryTab) entries.getComponentAt(i));
-			if (checkForSave(temp)) {
+			if(entries.getComponentAt(i) instanceof EntryTab){
+				EntryTab temp = ((EntryTab) entries.getComponentAt(i));
+				if (checkForSave(temp)) {
+					entries.remove(i);
+					repaint();
+				}
+			}else {
 				entries.remove(i);
-				//refreshWorkAreas();
-				repaint();
 			}
 		}
 	}
@@ -227,8 +230,6 @@ public class NotebookFrame extends JFrame implements ActionListener {
 
 		file.add(makeMenuItem("Settings", "settings", null));
 
-		file.add(makeMenuItem("View Entries", "view entries", javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK)));
-
 		file.add(makeMenuItem("View Source", "view source", null));
 
 		file.add(makeMenuItem("Append PDF", "append pdf", null));
@@ -308,10 +309,7 @@ public class NotebookFrame extends JFrame implements ActionListener {
 				if (f.isDirectory()) {
 					return true;
 				}
-				if(f.getName().endsWith(".pdf")){
-					return true;
-				}
-				return false;
+				return (f.getName().endsWith(".pdf"));
 			}
 		});
 		int m = jfc.showOpenDialog(this);
@@ -330,11 +328,35 @@ public class NotebookFrame extends JFrame implements ActionListener {
 				null,
 				"Insert Name Here");
 		if(entryTitle==null)return;
+		while(!checkName(entryTitle)){
+			entryTitle = (String) JOptionPane.showInputDialog(new Frame(), 
+					"Please choose an unused name:", 
+					"New Entry",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					null,
+					"Insert Unique Name Here");
+		}
 		Entry en = currentNotebook.newEntry(entryTitle);
 		addTab(en);
 	}
 	
+	private boolean checkName(String name){
+		for(Entry e : currentNotebook.getEntries()){
+			if(e.getTitle().equals(name))return false;
+		}
+		for(PDFWrapper e : currentNotebook.getPDFs()){
+			if(e.getTitle().equals(name))return false;
+		}
+		return true;
+	}
+	
 	private void addTab(DataStorage dataStorage){
+		String t = dataStorage.getTitle();
+		for(Component c : entries.getComponents()){
+			//Prevent opening up duplicates tabs.
+			if(t.equals(c.getName())) return;
+		}
 		if(dataStorage instanceof Entry){
 			EntryTab temp = new EntryTab((Entry) dataStorage);
 			entries.add(temp);
@@ -346,7 +368,7 @@ public class NotebookFrame extends JFrame implements ActionListener {
 			temp.setRequestFocusEnabled(false);
 			temp.setVerifyInputWhenFocusTarget(false);
 		}
-		else {
+		else if(dataStorage instanceof PDFWrapper){
 			PDFTab temp = new PDFTab((PDFWrapper) dataStorage);
 			entries.add(temp);
 			fillEntryList();

@@ -25,6 +25,7 @@ public class Notebook {
 	private Document dom;
 	private File filename;
 	private SecretKeySpec key;
+	private int maxSerial;
 
 	public Notebook(File f, String t, String author, boolean encrypted, SecretKeySpec key){
 		try {
@@ -33,6 +34,7 @@ public class Notebook {
 			this.title = t;
 			this.isEncrypted = encrypted;
 			this.key = key;
+			this.maxSerial = 0;
 
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -44,9 +46,9 @@ public class Notebook {
 
 			rootElement.appendChild(makeTextNode("Title", title));
 			rootElement.appendChild(makeTextNode("Author", Util.encrypt(author, key)));
-			rootElement.appendChild(makeTextNode("Util.encrypted", isEncrypted ? "1" : "0"));
+			rootElement.appendChild(makeTextNode("Encrypted", isEncrypted ? "1" : "0"));
 			rootElement.appendChild(dom.createElement("Edits"));
-			rootElement.appendChild(makeTextNode("PassCheck", Util.encrypt(f.getName(), key)));
+			if(isEncrypted)rootElement.appendChild(makeTextNode("PassCheck", Util.encrypt(f.getName(), key)));
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -77,22 +79,30 @@ public class Notebook {
 			dom = db.parse(f);
 			Element el = dom.getDocumentElement();
 			title = getTextValue(title, el, "Title");
-			isEncrypted = getTextValue(null, el, "Util.encrypted").equals("1");
+			isEncrypted = getTextValue(null, el, "Encrypted").equals("1");
 			if(isEncrypted){
 				this.key = getKey(el,f.getName());
 			}
 			author = Util.decrypt(getTextValue(author, el, "Author"), key);
 			
 			
-
+			Entry e;
 			NodeList entries = el.getElementsByTagName("Entry");
 			for(int i=0; i< entries.getLength(); i++){
-				entryList.add(new Entry(entries.item(i), dom, this, this.key));				
+				e=new Entry(entries.item(i), dom, this, this.key);
+				entryList.add(e);
+				if(e.getSerial() > this.maxSerial){
+					maxSerial=e.getSerial();
+				}
 			}
-
+			PDFWrapper p;
 			entries = el.getElementsByTagName("PDF");
 			for(int i=0; i< entries.getLength(); i++){
-				pdfList.add(new PDFWrapper(entries.item(i), key));				
+				p=new PDFWrapper(entries.item(i), key);
+				pdfList.add(p);
+				if(p.getSerial() > this.maxSerial){
+					maxSerial=p.getSerial();
+				}
 			}
 
 		} catch (ParserConfigurationException pce) {
@@ -118,7 +128,8 @@ public class Notebook {
 	public Entry newEntry(String title){
 		Element el = dom.createElement("Entry");
 		dom.getFirstChild().appendChild(el);
-		Entry en = new Entry(el, dom, title, this, key);
+		maxSerial++;
+		Entry en = new Entry(el, dom, title, this, key, maxSerial);
 		entryList.add(en);
 		return en;		
 	}
@@ -157,9 +168,9 @@ public class Notebook {
 		Element el = dom.createElement("PDF");
 		dom.getFirstChild().appendChild(el);
 		try {
-			pdfList.add(new PDFWrapper(el,dom, this, file, key));
+			maxSerial++;
+			pdfList.add(new PDFWrapper(el,dom, this, file, key, maxSerial));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -183,6 +194,7 @@ public class Notebook {
 		}
 		throw new InvalidKeyException("Password was incorrect");
 	}
+
 
 
 	
