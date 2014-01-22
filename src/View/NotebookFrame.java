@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.security.InvalidKeyException;
+import java.util.PriorityQueue;
+import java.util.SortedSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -186,12 +188,14 @@ public class NotebookFrame extends JFrame implements ActionListener {
 
 	public void fillEntryList(){
 		if(currentNotebook!= null){
+			//Sort entrylist by serial number.
+			PriorityQueue<DataStorage> pqd = new PriorityQueue<>();
+			pqd.addAll(currentNotebook.getEntries());
+			pqd.addAll(currentNotebook.getPDFs());
+			
 			DefaultListModel<DataStorage> listModel = new DefaultListModel<>();
-			for (Entry e : currentNotebook.getEntries()){
-				listModel.addElement(e);
-			}
-			for (PDFWrapper p : currentNotebook.getPDFs()){
-				listModel.addElement(p);
+			for (DataStorage d : pqd){
+				listModel.addElement(d);
 			}
 			entryList.setModel(listModel);       
 		}
