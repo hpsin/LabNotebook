@@ -7,10 +7,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 
+import Data.DataStorage;
 import Data.Entry;
 import net.atlanticbb.tantlinger.shef.HTMLEditorPane;
 
-public class EntryTab extends JPanel{
+public class EntryTab extends JPanel implements DataRepresentation{
 
 	private JScrollPane wys;
 	private HTMLEditorPane html;
@@ -27,16 +28,16 @@ public class EntryTab extends JPanel{
 	        
 			if(en.getHTML()!=null)html.setText(en.getHTML());
 			this.setName(en.getTitle());
-			setEditor(en.getEditCount()); 
+//			setEditor(en.getEditCount()); 
 			
 		}
 		
-		private void setEditor(int editCount) {
-			Color toBe;
-			if(editCount == 0){
-				
-			}
-		}
+//		private void setEditor(int editCount) {
+//			Color toBe;
+//			if(editCount == 0){
+//				
+//			}
+//		}
 
 		private void generateLayout(JToolBar entryToolBar){
 			javax.swing.GroupLayout entryLayout = new javax.swing.GroupLayout(this);
@@ -82,5 +83,14 @@ public class EntryTab extends JPanel{
 			}else{
 				System.out.println(e.getActionCommand());
 			}
+		}
+
+		public Entry getEntry() {
+			return en;
+		}
+
+		@Override
+		public DataStorage getData() {
+			return en;
 		}
 }

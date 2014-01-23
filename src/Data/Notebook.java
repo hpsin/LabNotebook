@@ -48,7 +48,7 @@ public class Notebook {
 			rootElement.appendChild(makeTextNode("Author", Util.encrypt(author, key)));
 			rootElement.appendChild(makeTextNode("Encrypted", isEncrypted ? "1" : "0"));
 			rootElement.appendChild(dom.createElement("Edits"));
-			if(isEncrypted)rootElement.appendChild(makeTextNode("PassCheck", Util.encrypt(f.getName(), key)));
+			if(isEncrypted)rootElement.appendChild(makeTextNode("PassCheck", Util.encrypt(title, key)));
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -81,7 +81,7 @@ public class Notebook {
 			title = getTextValue(title, el, "Title");
 			isEncrypted = getTextValue(null, el, "Encrypted").equals("1");
 			if(isEncrypted){
-				this.key = getKey(el,f.getName());
+				this.key = getKey(el,title);
 			}
 			author = Util.decrypt(getTextValue(author, el, "Author"), key);
 			
@@ -195,7 +195,20 @@ public class Notebook {
 		throw new InvalidKeyException("Password was incorrect");
 	}
 
-
-
+	public String getTitle() {
+		return title;
+	}
 	
+	public void setTitle(String t){
+		this.title=t;
+		Element top = (Element) dom.getChildNodes().item(0);
+		top.getElementsByTagName("Title").item(0).setTextContent(t);
+		if(isEncrypted)top.getElementsByTagName("PassCheck").item(0).setTextContent(Util.encrypt(t, key));
+	}
+
+	public void removeData(DataStorage data) {
+		dom.getChildNodes().item(0).removeChild(data.getNode());
+		pdfList.remove(data);
+		entryList.remove(data);
+	}
 }

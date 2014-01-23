@@ -19,7 +19,6 @@ public class Entry extends DataStorage{
 	private String html_body;
 	private String title;
 	private Date timestamp;
-	private Element nodeRep;
 	private int editCount;
 	private Document doc;
 	private ArrayList<Date> editList = new ArrayList<>();
@@ -33,14 +32,14 @@ public class Entry extends DataStorage{
 		Date d = new Date();
 		timestamp = d;
 		this.title=title;
-		this.nodeRep=(Element) item;
+		this.root=(Element) item;
 		this.key = key;
 		this.serial = maxSerial;
 		
 		item.appendChild(doc.createElement("Title"));
 		item.appendChild(doc.createElement("Timestamp"));
 		item.appendChild(doc.createElement("Edits"));
-		nodeRep.setAttribute("Serial", String.valueOf(maxSerial));
+		root.setAttribute("Serial", String.valueOf(maxSerial));
 		
 		Node html = doc.createElement("Body");
 		Node html_cdata = doc.createCDATASection("");
@@ -48,7 +47,7 @@ public class Entry extends DataStorage{
 		html.appendChild(html_cdata);
 
 		getNode("Title", (Element) item).appendChild(doc.createTextNode(Util.encrypt(title, key)));
-		getNode("Timestamp", nodeRep).appendChild(doc.createTextNode(sdf.format(d)));
+		getNode("Timestamp", root).appendChild(doc.createTextNode(sdf.format(d)));
 		editCount=0;
 	}
 
@@ -61,16 +60,15 @@ public class Entry extends DataStorage{
 		this.parent = note;
 		this.key=key;
 		this.serial = Integer.parseInt(item.getAttributes().getNamedItem("Serial").getTextContent());
-		nodeRep = (Element) item;
-		title = Util.decrypt(getTextValue(title, nodeRep, "Title"), key);
-		html_body = Util.decrypt(getTextValue(html_body, nodeRep, "Body"), key);
-		//html_body = html_body.substring(9, html_body.length()-4); //Get rid of CDATA
+		root = (Element) item;
+		title = Util.decrypt(getTextValue(title, root, "Title"), key);
+		html_body = Util.decrypt(getTextValue(html_body, root, "Body"), key);
 		try {
-			timestamp = sdf.parse(getTextValue(null, nodeRep, "Timestamp"));
+			timestamp = sdf.parse(getTextValue(null, root, "Timestamp"));
 		} catch (ParseException e2) {
 			e2.printStackTrace();
 		}
-		NodeList edits = nodeRep.getElementsByTagName("Edits").item(0).getChildNodes();
+		NodeList edits = root.getElementsByTagName("Edits").item(0).getChildNodes();
 		editCount = edits.getLength();
 
 		for(int i=0; i<edits.getLength(); i++){
@@ -116,9 +114,9 @@ public class Entry extends DataStorage{
 	}
 
 	public boolean saveXML(){
-		((CharacterData)getNode("Body",nodeRep).getFirstChild()).setData(Util.encrypt(html_body, key));
+		((CharacterData)getNode("Body",root).getFirstChild()).setData(Util.encrypt(html_body, key));
 		Date d = new Date();
-		getNode("Edits", nodeRep).appendChild(makeTextNode("Edit", sdf.format(d), doc)); 
+		getNode("Edits", root).appendChild(makeTextNode("Edit", sdf.format(d), doc)); 
 		editCount++;
 		return parent.save();
 	}
@@ -129,4 +127,34 @@ public class Entry extends DataStorage{
 		return e;
 	}
 
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public String getTimestampString() {
+		return sdf.format(timestamp);
+	}
+
+	public ArrayList<Date> getEdits() {
+		return editList;
+	}
+
+	public void setSerial(int value) {
+		this.serial = value;
+		root.setAttribute("Serial", String.valueOf(value));	
+	}
+
+	public void setTitle(String t){
+		this.title=t;
+		root.getElementsByTagName("Title").item(0).setTextContent(Util.encrypt(title, key));
+	}
+
+	public void setTimestamp(Date parse) {
+		this.timestamp = parse;
+		root.getElementsByTagName("Timestamp").item(0).setTextContent(sdf.format(parse));
+		
+	}
+	
+	
+	
 }

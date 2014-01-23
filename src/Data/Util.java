@@ -88,7 +88,7 @@ public class Util {
 	 * @return Decrypted, decompressed data.  
 	 */
 	public static String decrypt(String data, SecretKeySpec key){
-		if(key!=null){
+		if(key!=null && !data.equals(" ")){
 			return new String(decryptBytes(data.getBytes(), key));
 		}
 		return data;

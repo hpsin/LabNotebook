@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.security.InvalidKeyException;
 import java.util.PriorityQueue;
-import java.util.SortedSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -93,7 +92,6 @@ public class NotebookFrame extends JFrame implements ActionListener {
 				loadNotebook( new Notebook(jfc.getSelectedFile()));
 			} else loadNotebook();
 		} else if (n==1){
-			//m==1, create
 			CreateDialog cd = new CreateDialog(this);
 			loadNotebook( cd.getNotebook());
 		}
@@ -103,11 +101,6 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		if(checkSaveAll() && n != null){
 			currentNotebook = n;
 			fillEntryList();
-			for (Component d : entries.getComponents()) {
-				if (d instanceof EntryTab) {	
-					entries.remove(d);
-				}
-			}
 		}
 	}
 
@@ -135,7 +128,6 @@ public class NotebookFrame extends JFrame implements ActionListener {
 				}
 			}			
 		});
-		//TODO double click to open in list;		
 	}
 
 
@@ -192,13 +184,25 @@ public class NotebookFrame extends JFrame implements ActionListener {
 			PriorityQueue<DataStorage> pqd = new PriorityQueue<>();
 			pqd.addAll(currentNotebook.getEntries());
 			pqd.addAll(currentNotebook.getPDFs());
-			
 			DefaultListModel<DataStorage> listModel = new DefaultListModel<>();
-			for (DataStorage d : pqd){
-				listModel.addElement(d);
+			while(!pqd.isEmpty()){
+				listModel.addElement(pqd.remove());
 			}
-			entryList.setModel(listModel);       
+			entryList.setModel(listModel);
+			
+			for (int i = 0; i < entries.getTabCount(); i++) {
+				if(entries.getComponentAt(i) instanceof EntryTab){
+					entries.setTitleAt(i, entries.getComponentAt(i).getName());
+				}
+				DataStorage d = ((DataRepresentation)entries.getComponentAt(i)).getData();
+				if(! listModel.contains(d)){
+					//If the open tab is no longer in pqd, close the tab.
+					entries.remove(i);
+				}
+
+			}
 		}
+
 	}
 
 	private void generateLayout(){
@@ -265,22 +269,28 @@ public class NotebookFrame extends JFrame implements ActionListener {
 
 		String cmd = e.getActionCommand();
 
-		if ("new entry".equals(cmd)) {
-			newEntry();
-
-		} else if ("load notebook".equals(cmd)) {
+		if ("load notebook".equals(cmd)) {
 			try {
 				loadNotebook();
 			} catch (InvalidKeyException e1) {
 				e1.printStackTrace();
 			}
-
+		}
+		
+		if(currentNotebook==null)return;
+		
+		if ("new entry".equals(cmd)) {
+			newEntry();
 		} else if ("save all".equals(cmd)) {
 			for (Component d : entries.getComponents()) {
 				if (d instanceof EntryTab) {
 					((EntryTab) d).save();
 				}
 			}
+		} else if ("settings".equals(cmd)) {
+			NotebookSettings nbs = new NotebookSettings(currentNotebook);
+			nbs.makeChoice();
+			fillEntryList();
 		} else if ("quit".equals(cmd)) {
 			if (checkSaveAll()) {
 				dispose();
@@ -294,7 +304,11 @@ public class NotebookFrame extends JFrame implements ActionListener {
 					//temp.clear();
 					entries.remove(temp);
 				}
-			} else
+			} else if("view source".equals(cmd)){
+				EntryAdminDialog ead = new EntryAdminDialog(temp.getEntry());
+				ead.makeChoice();
+				fillEntryList();
+			}else 
 				temp.actionPerformed(e);
 		}
 	}
@@ -364,7 +378,6 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		if(dataStorage instanceof Entry){
 			EntryTab temp = new EntryTab((Entry) dataStorage);
 			entries.add(temp);
-			fillEntryList();
 			entries.setSelectedComponent(temp);
 			int tabLocation = entries.getSelectedIndex();
 			entries.setTabComponentAt(tabLocation, new ButtonTabComponent(
@@ -375,7 +388,6 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		else if(dataStorage instanceof PDFWrapper){
 			PDFTab temp = new PDFTab((PDFWrapper) dataStorage);
 			entries.add(temp);
-			fillEntryList();
 			entries.setSelectedComponent(temp);
 			int tabLocation = entries.getSelectedIndex();
 			entries.setTabComponentAt(tabLocation, new ButtonTabComponent(
@@ -383,6 +395,7 @@ public class NotebookFrame extends JFrame implements ActionListener {
 			temp.setRequestFocusEnabled(false);
 			temp.setVerifyInputWhenFocusTarget(false);
 		}
+		fillEntryList();
 	}
 
 	public static void main(String[] args){

@@ -40,7 +40,6 @@ public class CreateDialog extends JDialog {
 
 	public Notebook getNotebook(){
 		this.setVisible(true);
-
 		return returnValue;
 	}
 
@@ -73,14 +72,13 @@ public class CreateDialog extends JDialog {
 		titleField = new javax.swing.JTextField();
 		authField = new javax.swing.JTextField();
 		passCheckBox = new javax.swing.JCheckBox("Encrypt?");
-		passField = new javax.swing.JTextField();
+		passField = new javax.swing.JPasswordField();
 		passLabel = new javax.swing.JLabel("Password:");
 		createButton = new javax.swing.JButton("Create");
 		cancelButton = new javax.swing.JButton("Cancel");
 		this.getRootPane().setDefaultButton(createButton);
 
 		createButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				createButtonAction();
@@ -88,7 +86,6 @@ public class CreateDialog extends JDialog {
 		});
 
 		cancelButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cancelButtonAction();
@@ -163,6 +160,6 @@ public class CreateDialog extends JDialog {
 	private javax.swing.JLabel passLabel;
 	private javax.swing.JTextField titleField;
 	private javax.swing.JTextField authField;
-	private javax.swing.JTextField passField;
+	private javax.swing.JPasswordField passField;
 	// End of variables declaration                   
 }

@@ -24,12 +24,11 @@ import org.w3c.dom.NodeList;
 
 public class PDFWrapper extends DataStorage{
 
-	private Node root;
 	private File filename;
 	private SecretKeySpec key;
 	
 	public PDFWrapper(Node item, Document doc, Notebook parent, File file, SecretKeySpec key, int maxSerial) throws IOException {
-		this.root=item;
+		this.root=(Element) item;
 		this.key = key;
 		this.filename = file;
 		this.serial = maxSerial;
@@ -51,7 +50,7 @@ public class PDFWrapper extends DataStorage{
 	}
 
 	public PDFWrapper(Node item, SecretKeySpec key) {
-		root=item;
+		root=(Element) item;
 		this.key = key;
 		this.filename = new File(Util.decrypt(getTextValue(null, (Element)item, "Title"), key));
 		this.serial = Integer.parseInt(item.getAttributes().getNamedItem("Serial").getTextContent());
@@ -72,8 +71,7 @@ public class PDFWrapper extends DataStorage{
 	}
 	
 	public InputStream getPDFStream() throws IOException{		
-		String data = Util.decrypt(getTextValue(null,  (Element)root,  "Body"), key);
-		return new ByteArrayInputStream(Base64.decodeBase64(data));
-	}
-
+		byte[] data = Util.decryptBytes(getTextValue(null,  (Element)root,  "Body").getBytes(), key);
+		return new ByteArrayInputStream(data);
+	}	
 }

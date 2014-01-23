@@ -9,12 +9,16 @@ import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.views.DocumentViewController;
 import org.icepdf.ri.common.views.DocumentViewControllerImpl;
 
+import Data.DataStorage;
 import Data.PDFWrapper;
 
 
-public class PDFTab extends javax.swing.JPanel {
+public class PDFTab extends javax.swing.JPanel implements DataRepresentation{
 
+	private PDFWrapper pdfw;
+	
 	public PDFTab(PDFWrapper pw){
+		this.pdfw=pw;
 		this.setName(pw.getTitle());
 		SwingController controller = new SwingController();
 		controller.setIsEmbeddedComponent(true);
@@ -39,7 +43,7 @@ public class PDFTab extends javax.swing.JPanel {
 		// Now that the GUI is all in place, we can try opening a PDF
 //		byte[] data =  pw.getPDFStream();
 		try {
-			controller.openDocument(pw.getPDFStream(), "description", null);
+			controller.openDocument(pw.getPDFStream(), "", null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block 
 			e.printStackTrace();
@@ -51,6 +55,11 @@ public class PDFTab extends javax.swing.JPanel {
 		controller.setPageViewMode(
 				DocumentViewControllerImpl.ONE_PAGE_VIEW,
 				false);
+	}
+
+	@Override
+	public DataStorage getData() {
+		return pdfw;
 	}
 
 
