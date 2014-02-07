@@ -18,9 +18,9 @@ import org.w3c.dom.NodeList;
 
 
 /**
- * @author Hirsch Singhal
  * Data representation of stored text and images.  Automatically updates the 
  * DOM using the provided {@link Node} upon saving.  
+ * @author Hirsch Singhal
  */
 public class Entry extends DataStorage{
 	private String html_body;

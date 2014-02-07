@@ -3,8 +3,8 @@ package Data;
 import org.w3c.dom.Element;
 
 /**
- * @author Hirsch Singhal
  * Used to store data in a {@link Notebook}.  Provides ordering and titling. 
+ * @author Hirsch Singhal
  */
 public abstract class DataStorage implements Comparable<DataStorage>{
 

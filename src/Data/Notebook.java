@@ -17,8 +17,9 @@ import org.xml.sax.SAXException;
 
 
 /**
- * @author Hirsch Singhal
  * Data representation of a Notebook.  Tracks the DOM, decrypts Entries and PDFs.
+ * @author Hirsch Singhal
+ * 
  */
 public class Notebook {
 	private ArrayList<Entry> entryList = new ArrayList<>();

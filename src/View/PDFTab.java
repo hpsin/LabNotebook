@@ -14,8 +14,9 @@ import Data.PDFWrapper;
 
 
 /**
+ * Displays a PDF document one page at a time using icePDF.
  * @author Hirsch Singhal
- *	Displays a PDF document one page at a time using icePDF.
+ *	
  */
 public class PDFTab extends javax.swing.JPanel implements DataRepresentation{
 

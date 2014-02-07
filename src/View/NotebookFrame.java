@@ -33,8 +33,9 @@ import Data.PDFWrapper;
 
 
 /**
+ * Top level GUI element.  Holds the tabbed pane, list, and menubar for the program. 
  * @author Hirsch Singhal
- *	Top level GUI element.  Holds the tabbed pane, list, and menubar for the program. 
+ *	
  */
 public class NotebookFrame extends JFrame implements ActionListener {
 

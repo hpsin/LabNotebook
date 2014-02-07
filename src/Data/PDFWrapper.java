@@ -24,8 +24,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ * Stores binary data for a PDF.  
  * @author Hirsch Singhal
- *	Stores binary data for a PDF.  
+ *	
  */
 public class PDFWrapper extends DataStorage{
 
@@ -39,7 +40,7 @@ public class PDFWrapper extends DataStorage{
 	 * @param parent Parent Notebook.  Used to force a save once loaded.
 	 * @param file Location of the .pdf file.
 	 * @param key Used to encrypt the PDF data.  Can be null.
-	 * @param serial Serial number for this {@link DataStorage} object.
+	 * @param maxSerial Serial number for this {@link DataStorage} object.
 	 * @throws IOException Occurs if IO access is blocks or an incorrect file is used. 
 	 */
 	public PDFWrapper(Node item, Document doc, Notebook parent, File file, SecretKeySpec key, int maxSerial) throws IOException {

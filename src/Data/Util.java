@@ -23,8 +23,9 @@ import org.apache.commons.codec.binary.Base64;
 
 
 /**
+ * Provides encryption, decryption, compression, and keymaking services.
  * @author Hirsch Singhal
- * 	Provides encryption, decryption, compression, and keymaking services. 
+ * 	 
  */
 public class Util {
 	/**

@@ -5,8 +5,9 @@ import Data.Entry;
 import Data.PDFWrapper;
 
 /**
+ *   Interface to provide access to Data objects from within a View object.
  * @author Hirsch Singhal
- *  Interface to provide access to Data objects from within a View object.
+ *
  */
 public interface DataRepresentation {
 

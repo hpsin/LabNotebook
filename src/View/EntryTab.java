@@ -12,9 +12,10 @@ import Data.Entry;
 import net.atlanticbb.tantlinger.shef.HTMLEditorPane;
 
 /**
- * @author Hirsch Singhal
- *	Used to display an {@link Entry}.  Holds an {@link HTMLEditorPane} and 
+ * Used to display an {@link Entry}.  Holds an {@link HTMLEditorPane} and 
  *	provides editing toolbars.
+ * @author Hirsch Singhal
+ *	
  */
 public class EntryTab extends JPanel implements DataRepresentation{
 
