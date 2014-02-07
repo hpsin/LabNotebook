@@ -16,6 +16,10 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 
+/**
+ * @author Hirsch Singhal
+ * Data representation of a Notebook.  Tracks the DOM, decrypts Entries and PDFs.
+ */
 public class Notebook {
 	private ArrayList<Entry> entryList = new ArrayList<>();
 	private ArrayList<PDFWrapper> pdfList = new ArrayList<>();
@@ -27,6 +31,14 @@ public class Notebook {
 	private SecretKeySpec key;
 	private int maxSerial;
 
+	/**
+	 * Creates a new Notebook
+	 * @param f File location of the Notebook.  Generated using the title.
+	 * @param t Title of the Notebook.
+	 * @param author Name or concatentated names of authors.
+	 * @param encrypted <code>true</code> if encrypted.
+	 * @param key Encrypt/decrypt key.  Null for unencrypted Notebooks.
+	 */
 	public Notebook(File f, String t, String author, boolean encrypted, SecretKeySpec key){
 		try {
 			this.filename=f;
@@ -68,6 +80,11 @@ public class Notebook {
 
 	}
 
+	/**
+	 * Loads a Notebook from a File.  Prompts for a password if needed.  Decrypts Entries and PDFs if needed.
+	 * @param f File to load the Notebook from.
+	 * @throws InvalidKeyException Provided password was incorrect.
+	 */
 	public Notebook(File f) throws InvalidKeyException{
 		this.filename=f;
 		if(!f.exists()){
@@ -125,6 +142,11 @@ public class Notebook {
 		return value;
 	}
 
+	/**
+	 * Creates a new {@link Entry}, stores it in the DOM, adds it to the entryList.  Increments maxSerial.
+	 * @param title Title of the Entry. 
+	 * @return The created Entry.
+	 */
 	public Entry newEntry(String title){
 		Element el = dom.createElement("Entry");
 		dom.getFirstChild().appendChild(el);
@@ -134,6 +156,10 @@ public class Notebook {
 		return en;		
 	}
 
+	/**
+	 * Saves the DOM to the file provided in the constructor. 
+	 * @return Success or failure of save operation. 
+	 */
 	public boolean save(){
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -159,11 +185,19 @@ public class Notebook {
 	}
 
 
+	/**
+	 * @return List of {@link Entry}s in the Notebook.
+	 */
 	public ArrayList<Entry> getEntries() {
 		return entryList;
 	}
 
 
+	/**
+	 * Using a provided File, creates a {@link PDFWrapper} and adds it to the DOM.
+	 * @param file Location of the .pdf file.
+	 * 
+	 */
 	public void addPDF(File file) {
 		Element el = dom.createElement("PDF");
 		dom.getFirstChild().appendChild(el);
@@ -176,6 +210,9 @@ public class Notebook {
 	}
 
 
+	/**
+	 * @return List of {@link PDFWrapper} in the Notebook.
+	 */
 	public ArrayList<PDFWrapper> getPDFs() {
 		return pdfList;
 	}
@@ -195,10 +232,17 @@ public class Notebook {
 		throw new InvalidKeyException("Password was incorrect");
 	}
 
+	/**
+	 * @return Title of the Notebook.
+	 */
 	public String getTitle() {
 		return title;
 	}
 	
+	/**
+	 * Sets the title of the Notebook.  Changing the title resets the PassCheck field in the DOM.  Does not force a save.
+	 * @param t new Title.
+	 */
 	public void setTitle(String t){
 		this.title=t;
 		Element top = (Element) dom.getChildNodes().item(0);
@@ -206,6 +250,10 @@ public class Notebook {
 		if(isEncrypted)top.getElementsByTagName("PassCheck").item(0).setTextContent(Util.encrypt(t, key));
 	}
 
+	/**
+	 * Removes a provided {@link DataStorage} form the DOM and applicable lists.
+	 * @param data Object to remove. 
+	 */
 	public void removeData(DataStorage data) {
 		dom.getChildNodes().item(0).removeChild(data.getNode());
 		pdfList.remove(data);

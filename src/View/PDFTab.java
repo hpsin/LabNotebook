@@ -13,10 +13,18 @@ import Data.DataStorage;
 import Data.PDFWrapper;
 
 
+/**
+ * @author Hirsch Singhal
+ *	Displays a PDF document one page at a time using icePDF.
+ */
 public class PDFTab extends javax.swing.JPanel implements DataRepresentation{
 
 	private PDFWrapper pdfw;
 	
+	/**
+	 * @param pw {@link PDFWrapper} to provide the inputStream containing the 
+	 * raw PDF data.  
+	 */
 	public PDFTab(PDFWrapper pw){
 		this.pdfw=pw;
 		this.setName(pw.getTitle());
@@ -45,7 +53,6 @@ public class PDFTab extends javax.swing.JPanel implements DataRepresentation{
 		try {
 			controller.openDocument(pw.getPDFStream(), "", null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block 
 			e.printStackTrace();
 		}
 

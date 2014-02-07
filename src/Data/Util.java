@@ -22,7 +22,16 @@ import net.atlanticbb.tantlinger.io.IOUtils;
 import org.apache.commons.codec.binary.Base64;
 
 
+/**
+ * @author Hirsch Singhal
+ * 	Provides encryption, decryption, compression, and keymaking services. 
+ */
 public class Util {
+	/**
+	 * @param password String provided by user for password.
+	 * @param saltString String provided by program to use as salt.
+	 * @return AES key suitable for encryption and decryption of data.
+	 */
 	public static SecretKeySpec makeKey(String password, String saltString){
 		if(password == null || password.isEmpty())return null;
 		byte[] salt = (saltString+".nbk").getBytes();
@@ -121,6 +130,11 @@ public class Util {
 		return new byte[0];
 	}
 	
+	/**
+	 * Compresses the provided byte array using GZip. 
+	 * @param bytes byte array to be compressed.
+	 * @return Compressed byte array.
+	 */
 	public static byte[] compress(byte[] bytes) {
 		if (bytes.length == 0) {
 			return bytes;
@@ -137,6 +151,11 @@ public class Util {
 		return new byte[0];
 	}
 
+	/**
+	 * Decompresses a byte array using GZip.
+	 * @param bytes Compressed bytes.
+	 * @return Decompressed byte array.
+	 */
 	public static byte[] decompress(byte[] bytes) {
 		try{
 			ByteArrayOutputStream bos= new ByteArrayOutputStream();

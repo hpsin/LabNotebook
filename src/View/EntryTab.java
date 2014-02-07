@@ -11,6 +11,11 @@ import Data.DataStorage;
 import Data.Entry;
 import net.atlanticbb.tantlinger.shef.HTMLEditorPane;
 
+/**
+ * @author Hirsch Singhal
+ *	Used to display an {@link Entry}.  Holds an {@link HTMLEditorPane} and 
+ *	provides editing toolbars.
+ */
 public class EntryTab extends JPanel implements DataRepresentation{
 
 	private JScrollPane wys;
@@ -19,6 +24,12 @@ public class EntryTab extends JPanel implements DataRepresentation{
 	private Entry en;
 	private static Color[] editRotation = {Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GREEN, Color.RED};
 	
+		/**
+		 * Creates an EntryTab using an {@link Entry} object.  Also initializes
+		 * the {@link HTMLEditorPane} and toolbar. First call to this method is 
+		 * expensive as it spins up the entirety of {@link HTMLEditorPane}   
+		 * @param en Entry to be displayed.
+		 */
 		public EntryTab(Entry en){
 			this.en = en;
 			html = new HTMLEditorPane();
@@ -56,14 +67,28 @@ public class EntryTab extends JPanel implements DataRepresentation{
 	        );
 		}
 		
+		/**
+		 * Returns the HTML represetnation of the {@link HTMLEditorPane}'s 
+		 * contents. Does NOT return the text associated with the {@link Entry} 
+		 * neccesarily.    
+		 * @return Currently displayed HTML.
+		 */
 		public String getSource(){
 			return html.getText();
 		}
 		
+		/**
+		 * @return The title of this {@link EntryTab}.
+		 */
 		public String getTitle() {
 			return this.getName();
 		}
 
+		/**
+		 * Forces the associated Entry to save itself using the HTML currently
+		 * being displayed. Forces a write to the harddrive. 
+		 * @return Success or failure of the save operation. 
+		 */
 		public boolean save() {
 			//if(!saved){
 				en.setHTML(html.getText());
@@ -73,10 +98,20 @@ public class EntryTab extends JPanel implements DataRepresentation{
 			return saved;
 		}
 
+		/**
+		 * Used to track whether or not the HTML has changed since last save. 
+		 * @return If this needs to be saved. 
+		 */
 		public boolean isChanged() {
 			return saved;
 		}
 		
+		/**
+		 * Acts on certain {@link ActionEvent} commands, currently only 
+		 * "save entry".  If a command is not recognized it is printed to 
+		 * System.out
+		 * @param e Command to be acted on.
+		 */
 		public void actionPerformed(ActionEvent e) {
 			if(e.getActionCommand().equals("save entry")){
 				save();
@@ -85,10 +120,17 @@ public class EntryTab extends JPanel implements DataRepresentation{
 			}
 		}
 
+		/**
+		 * Used to get the underlying {@link Entry} object.
+		 * @return Associated Entry.
+		 */
 		public Entry getEntry() {
 			return en;
 		}
 
+		/* (non-Javadoc)
+		 * @see View.DataRepresentation#getData()
+		 */
 		@Override
 		public DataStorage getData() {
 			return en;

@@ -4,27 +4,16 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JDialog;
 
 import Data.Notebook;
 import Data.Util;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- *
- * @author Hirsch
+ * Used to create a new {@link Notebook} object.
+ * @author Hirsch Singhal
  */
 public class CreateDialog extends JDialog {
 
@@ -32,12 +21,17 @@ public class CreateDialog extends JDialog {
 
 	/**
 	 * Creates new form InitialDialog
+	 * @param own Parent Frame
 	 */
 	public CreateDialog(Frame own) {
-		super(own, "Create an Entry", true);
+		super(own, "Create a Notebook", true);
 		initComponents();
 	}
 
+	/**
+	 * Displays the dialog and waits for the user to exit the dialog.
+	 * @return created Notebook.  May be null if the user selects cancel.
+	 */
 	public Notebook getNotebook(){
 		this.setVisible(true);
 		return returnValue;

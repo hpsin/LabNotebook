@@ -32,6 +32,10 @@ import Data.Notebook;
 import Data.PDFWrapper;
 
 
+/**
+ * @author Hirsch Singhal
+ *	Top level GUI element.  Holds the tabbed pane, list, and menubar for the program. 
+ */
 public class NotebookFrame extends JFrame implements ActionListener {
 
 	private JTabbedPane entries = new JTabbedPane();
@@ -39,6 +43,10 @@ public class NotebookFrame extends JFrame implements ActionListener {
 	private JList<DataStorage> entryList;
 
 
+	/**
+	 * Creates a new NotebookFrame.  On start, prompts the user to load or 
+	 * create a {@link Notebook}
+	 */
 	public NotebookFrame(){
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		generateToolbar();
@@ -131,7 +139,7 @@ public class NotebookFrame extends JFrame implements ActionListener {
 	}
 
 
-	void removeTabAt(int i) {
+	protected void removeTabAt(int i) {
 		if (i >= 0) {
 			if(entries.getComponentAt(i) instanceof EntryTab){
 				EntryTab temp = ((EntryTab) entries.getComponentAt(i));
@@ -178,6 +186,10 @@ public class NotebookFrame extends JFrame implements ActionListener {
 	}
 
 
+	/**
+	 * Resets the list of {@link Entry}s and {@link PDFWrapper}s in the Frame. 
+	 * Sorts the {@link DataStorage} objects based on serial number.
+	 */
 	public void fillEntryList(){
 		if(currentNotebook!= null){
 			//Sort entrylist by serial number.
@@ -265,6 +277,9 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		return menuItem;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent e) {
 
 		String cmd = e.getActionCommand();
@@ -398,6 +413,10 @@ public class NotebookFrame extends JFrame implements ActionListener {
 		fillEntryList();
 	}
 
+	/**
+	 * Crates and displays a new {@link NotebookFrame}
+	 * @param args Command line args.  Does nothing.
+	 */
 	public static void main(String[] args){
 		new NotebookFrame();
 	}
